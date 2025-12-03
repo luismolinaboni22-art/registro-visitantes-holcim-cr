@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Registro Visitantes - Holcim CR</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Registro de Visitantes</h1>
+    <button id="logoutBtn">Cerrar sesión</button>
+    <form id="visitorForm">
+      <label>Nombre</label><input name="nombre" required>
+      <label>Cédula</label><input name="cedula">
+      <label>Empresa</label><input name="empresa">
+      <label>Persona a la cual visita</label><input name="persona_visitada">
+      <label>Motivo</label><input name="motivo">
+      <label>Placa</label><input name="placa">
+      <label>Hora de ingreso</label><input name="hora_ingreso" type="datetime-local">
+      <label>Hora de salida</label><input name="hora_salida" type="datetime-local">
+      <button type="submit">Registrar</button>
+    </form>
+    <h2>Últimos visitantes</h2>
+    <table id="visitorsTable" border="1">
+      <thead><tr><th>Nombre</th><th>Cédula</th><th>Empresa</th><th>Persona</th><th>Motivo</th><th>Placa</th><th>Ingreso</th><th>Salida</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <script>
+    async function loadVisitors(){
+      const res = await fetch('/visitors');
+      if (res.status === 401) { window.location.href = '/login.html'; return; }
+      const data = await res.json();
+      const tbody = document.querySelector('#visitorsTable tbody');
+      tbody.innerHTML = '';
+      data.forEach(v=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${v.nombre}</td><td>${v.cedula}</td><td>${v.empresa}</td><td>${v.persona_visitada}</td><td>${v.motivo}</td><td>${v.placa}</td><td>${v.hora_ingreso}</td><td>${v.hora_salida}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+    document.getElementById('visitorForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const form = e.target;
+      const data = Object.fromEntries(new FormData(form).entries());
+      const res = await fetch('/register_visitor', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(data)
+      });
+      const r = await res.json();
+      if (r.ok) { form.reset(); loadVisitors(); }
+      else alert(r.msg || 'Error');
+    });
+    document.getElementById('logoutBtn').addEventListener('click', async ()=>{
+      await fetch('/logout', {method:'POST'});
+      window.location.href = '/login.html';
+    });
+    loadVisitors();
+  </script>
+</body>
+</html>

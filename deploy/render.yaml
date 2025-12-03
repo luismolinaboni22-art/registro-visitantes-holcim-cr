@@ -1,0 +1,7 @@
+# Archivo de ejemplo para desplegar en Render.com (web service)
+services:
+  - type: web
+    name: registro-visitantes-holcim-cr
+    env: python
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "python backend/app.py"
