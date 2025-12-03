@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Control de Ingreso de Visitantes - Holcim CR</title>
+    <style>
+        body { font-family: Arial; margin: 30px; }
+        input, select { padding: 8px; width: 250px; margin: 5px; }
+        button { padding: 10px; background: green; color: white; border: none; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+        table, th, td { border: 1px solid black; padding: 10px; }
+        a { text-decoration: none; color: blue; }
+    </style>
+</head>
+<body>
+
+<h2>Ingreso de Visitantes</h2>
+
+<form method="POST" action="/agregar">
+    <input type="text" name="nombre" placeholder="Nombre completo" required><br>
+    <input type="text" name="cedula" placeholder="Cédula" required><br>
+    <input type="text" name="empresa" placeholder="Empresa" required><br>
+    <input type="text" name="persona_visita" placeholder="Persona a quien visita" required><br>
+    <input type="text" name="motivo" placeholder="Motivo de la visita" required><br>
+    <input type="text" name="placa" placeholder="Placa del vehículo"><br>
+    <button type="submit">Registrar Ingreso</button>
+</form>
+
+<h2>Visitantes en sitio</h2>
+
+<table>
+    <tr>
+        <th>Nombre</th>
+        <th>Cédula</th>
+        <th>Empresa</th>
+        <th>Visita a</th>
+        <th>Motivo</th>
+        <th>Placa</th>
+        <th>Ingreso</th>
+        <th>Salida</th>
+        <th>Acción</th>
+    </tr>
+
+    {% for v in visitantes %}
+    <tr>
+        <td>{{ v.nombre }}</td>
+        <td>{{ v.cedula }}</td>
+        <td>{{ v.empresa }}</td>
+        <td>{{ v.persona_visita }}</td>
+        <td>{{ v.motivo }}</td>
+        <td>{{ v.placa }}</td>
+        <td>{{ v.hora_ingreso }}</td>
+        <td>{{ v.hora_salida }}</td>
+        <td>
+            {% if v.hora_salida == "" %}
+            <a href="/salida/{{ loop.index0 }}">Marcar salida</a>
+            {% else %}
+            -
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+</body>
+</html>
